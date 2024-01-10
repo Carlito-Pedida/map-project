@@ -24,8 +24,7 @@
         width: 100%;
       }
 
-      #marker {
-        background-image: url("imageSources/hrc-view.png");
+      .marker {
         background-size: cover;
         width: 50px;
         height: 50px;
@@ -36,6 +35,19 @@
 
       .mapboxgl-popup {
         max-width: 500px;
+      }
+
+      #popup-info {
+        border: none;
+      }
+
+      #popup-info > a {
+        text-decoration: none;
+        color: rgb(96, 96, 96);
+      }
+      h3 {
+        text-decoration: none;
+        color: rgb(96, 96, 96);
       }
     </style>
   </head>
@@ -54,28 +66,36 @@
 
       const myLocations = [
         {
-          name: "6448 Belhaven Dr. Fort Worth, Texas 76123",
+          name: "My Home",
+          address: "6448 Belhaven Dr. Fort Worth, Texas 76123",
           image: "./imageSources/bahay-view.png",
-          lngLat: [-97.424338, 32.615322]
+          lngLat: [-97.424338, 32.615322],
+          link: "https://www.google.com/search?q=6448+belhaven+drive+fort+worth+tx&oq=644&gs_lcrp=EgZjaHJvbWUqCAgAEEUYJxg7MggIABBFGCcYOzIGCAEQRRg5MgcIAhAAGIAEMgcIAxAAGIAEMgcIBBAAGIAEMgcIBRAAGIAEMgcIBhAAGIAEMgcIBxAAGIAEMgcICBAAGIAEMgcICRAAGIAE0gEJNDA0OGowajE1qAIAsAIA&sourceid=chrome&ie=UTF-8"
         },
         {
           name: "High Ridge Church Fort Worth",
+          address: "10100 Rolling Hills Dr, Fort Worth, TX 76126",
           image: "./imageSources/hrc-view.png",
-          lngLat: [-97.499223, 32.673944]
+          lngLat: [-97.499223, 32.673944],
+          link: "https://highridgechurch.com/"
         }
       ];
 
-      myLocations.forEach(({ name, images, lngLat }) => {
-        const popup = new mapboxgl.Popup({ offset: 25 }).setText(name);
+      myLocations.forEach(({ name, image, lngLat, address, link }) => {
+        const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+          `<div id="popup-info"><a href="${link}" target="_blank"><h3>${name}</h3></a><img src="${image}" alt="" style="width:100%;height:auto;"><h3>${address}</h3></div>`
+        );
 
         const el = document.createElement("div");
-        el.id = "marker";
+        el.className = "marker";
+        el.style.backgroundImage = `url("${image}")`;
 
-        new mapboxgl.Marker().setLngLat(lngLat).setPopup(popup).addTo(map);
+        new mapboxgl.Marker(el).setLngLat(lngLat).setPopup(popup).addTo(map);
       });
     </script>
   </body>
 </html>
+
 <!-- 32.61525525072508, -97.42434052001123
  //   const popup = new mapboxgl.Popup({ offset: 25 }).setText(
       //     "6448 Belhaven Dr. Fort Worth, Texas 76123"
