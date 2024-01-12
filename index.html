@@ -12,6 +12,11 @@
       rel="stylesheet"
     />
 
+    <link
+      rel="stylesheet"
+      href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
+    />
+
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
@@ -62,11 +67,37 @@
     </style>
   </head>
   <body>
-    <link
-      rel="stylesheet"
-      href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
-    />
+    <style>
+      #menu {
+        position: absolute;
+        background: #efefef;
+        padding: 10px;
+        font-family: "Open Sans", sans-serif;
+      }
+    </style>
+
     <div id="map"></div>
+
+    <div id="menu">
+      <input
+        id="satellite-streets-v12"
+        type="radio"
+        name="rtoggle"
+        value="satellite"
+        checked="checked"
+      />
+      <!-- See a list of Mapbox-hosted public styles at -->
+      <!-- https://docs.mapbox.com/api/maps/styles/#mapbox-styles -->
+      <label for="satellite-streets-v12">satellite streets</label>
+      <input id="light-v11" type="radio" name="rtoggle" value="light" />
+      <label for="light-v11">light</label>
+      <input id="dark-v11" type="radio" name="rtoggle" value="dark" />
+      <label for="dark-v11">dark</label>
+      <input id="streets-v12" type="radio" name="rtoggle" value="streets" />
+      <label for="streets-v12">streets</label>
+      <input id="outdoors-v12" type="radio" name="rtoggle" value="outdoors" />
+      <label for="outdoors-v12">outdoors</label>
+    </div>
 
     <script>
       mapboxgl.accessToken =
@@ -82,11 +113,19 @@
             container: "map", // container ID
             style: "mapbox://styles/mapbox/satellite-streets-v12",
             center: [-97.424338, 32.615322], // set center to user's IP location
-            zoom: 14, // starting zoom
+            zoom: 13, // starting zoom
             projection: "globe"
           });
 
-          // Add zoom and rotation controls to the map.
+          const layerList = document.getElementById("menu");
+          const inputs = layerList.getElementsByTagName("input");
+
+          for (const input of inputs) {
+            input.onclick = (layer) => {
+              const layerId = layer.target.id;
+              map.setStyle("mapbox://styles/mapbox/" + layerId);
+            };
+          }
 
           const myLocations = [
             {
@@ -120,23 +159,13 @@
               .addTo(map);
           });
 
-          // const geoCode = document.createElement("div");
-          // geoCode.className = "geo-search";
-
-          // map.addControl(
-          //   new MapboxGeocoder({
-          //     geoCode,
-          //     accessToken: mapboxgl.accessToken,
-          //     mapboxgl: mapboxgl
-          //   })
-          // );
-
           const geoCode = document.createElement("div");
-          geoCode.className = "geo-search"; // Use the geo-search class
+          geoCode.className = "geo-search";
+          2;
 
           map.addControl(
             new MapboxGeocoder({
-              container: geoCode, // Use the geo-search element
+              container: geoCode,
               accessToken: mapboxgl.accessToken,
               mapboxgl: mapboxgl
             })
